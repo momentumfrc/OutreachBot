@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -66,6 +67,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
+		
 
 	}
 
@@ -74,6 +76,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		SmartDashboard.putNumber( "Throttle", throttle);
 		if(xbox.getXButton()) {
 			double m_r=gamepad.getY(Hand.kLeft);
 			double t_r=gamepad.getX(Hand.kRight);
@@ -82,7 +85,7 @@ public class Robot extends IterativeRobot {
 			drive.arcadeDrive(m_r, t_r, true); 
 		} else {
 			drive.arcadeDrive(xbox.getY(Hand.kLeft), xbox.getX(Hand.kRight), true);
-			if(xbox.getAButtonPressed() && throttle >= -1+THROTTLE_DIFF) {
+			if(xbox.getAButtonPressed() && throttle >= 0+THROTTLE_DIFF) {
 				throttle -= THROTTLE_DIFF;
 			}
 			if(xbox.getBButtonPressed() && throttle <= 1-THROTTLE_DIFF) {
