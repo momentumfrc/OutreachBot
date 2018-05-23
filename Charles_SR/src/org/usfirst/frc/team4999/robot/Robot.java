@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -27,10 +28,14 @@ public class Robot extends IterativeRobot {
 	private XboxController xbox; 
 	private LogitechF310 gamepad; 
 	private DifferentialDrive drive;
+	//private SendableChooser controlChooser;
+	
 	
 	private double throttle=1;
 	
 	private final double THROTTLE_DIFF = .1;
+	
+
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -45,6 +50,8 @@ public class Robot extends IterativeRobot {
 		xbox = new XboxController(1);
 		gamepad = new LogitechF310(2);
 		drive = new DifferentialDrive(new SpeedControllerGroup(leftFront, leftBack), new SpeedControllerGroup(rightFront, rightBack));
+		//controlChooser = new SendableChooser(); 
+		//controlChooser.addDefault("XboxBias and F310", );
 	}
 
 	/**
