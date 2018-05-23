@@ -7,7 +7,6 @@
 
 package org.usfirst.frc.team4999.robot;
 
-import edu.wpi.first.wpilibj.GamepadBase;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -25,7 +24,13 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 public class Robot extends IterativeRobot {
 	private VictorSP leftFront, leftBack, rightFront, rightBack;
 	private XboxController xbox; 
+	private LogitechF310 gamepad; 
 	private DifferentialDrive drive;
+	
+	private double throttle=1;
+	
+	private final double THROTTLE_DIFF = .1;
+	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -37,6 +42,7 @@ public class Robot extends IterativeRobot {
 		rightFront = new VictorSP(3);
 		rightBack = new VictorSP(4);
 		xbox = new XboxController(1);
+		gamepad = new LogitechF310(2);
 		drive = new DifferentialDrive(new SpeedControllerGroup(leftFront, leftBack), new SpeedControllerGroup(rightFront, rightBack));
 	}
 
@@ -68,7 +74,21 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		drive.arcadeDrive(xbox.getY(Hand.kLeft), xbox.getX(Hand.kRight), true);
+		if(xbox.getXButton()) {
+			double m_r=gamepad.getY(Hand.kLeft);
+			double t_r=gamepad.getX(Hand.kRight);
+			m_r = Utils.map(m_r, -1, 1, -throttle , throttle);
+			t_r = Utils.map(t_r, -1, 1, -throttle, throttle);
+			drive.arcadeDrive(m_r, t_r, true); 
+		} else {
+			drive.arcadeDrive(xbox.getY(Hand.kLeft), xbox.getX(Hand.kRight), true);
+			if(xbox.getAButtonPressed() && throttle >= -1+THROTTLE_DIFF) {
+				throttle -= THROTTLE_DIFF;
+			}
+			if(xbox.getBButtonPressed() && throttle <= 1-THROTTLE_DIFF) {
+				throttle += THROTTLE_DIFF;
+			}
+		}
 	}
 
 	/**
