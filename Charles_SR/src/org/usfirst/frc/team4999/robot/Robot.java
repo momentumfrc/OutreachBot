@@ -7,12 +7,14 @@
 
 package org.usfirst.frc.team4999.robot;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -28,6 +30,8 @@ public class Robot extends IterativeRobot {
 	private XboxController xbox; 
 	private LogitechF310 gamepad; 
 	private DifferentialDrive drive;
+	private Encoder leftDrive; 
+	private PIDcontroller movepid; 
 	//private SendableChooser controlChooser;
 	
 	
@@ -50,6 +54,8 @@ public class Robot extends IterativeRobot {
 		xbox = new XboxController(1);
 		gamepad = new LogitechF310(2);
 		drive = new DifferentialDrive(new SpeedControllerGroup(leftFront, leftBack), new SpeedControllerGroup(rightFront, rightBack));
+		leftDrive = new Encoder(1, 0);
+		movepid = new PIDcontroller(0,0,0, 10,10);
 		//controlChooser = new SendableChooser(); 
 		//controlChooser.addDefault("XboxBias and F310", );
 	}
@@ -96,8 +102,13 @@ public class Robot extends IterativeRobot {
 			m_r = Utils.map(m_r, -1, 1, -throttle , throttle);
 			t_r = Utils.map(t_r, -1, 1, -throttle, throttle);
 			drive.arcadeDrive(m_r, t_r, true);
-			if(xbox.getAButtonPressed() && throttle >= 0+THROTTLE_DIFF) {throttle -= THROTTLE_DIFF;
+			if(xbox.getAButtonPressed() && throttle >= 0+THROTTLE_DIFF) {
+				throttle -= THROTTLE_DIFF;
 			}
+			if(xbox.getBButtonPressed() && throttle <= 1-THROTTLE_DIFF) {
+				throttle += THROTTLE_DIFF;
+			}
+			
 		}
 	}
 
@@ -106,5 +117,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void testPeriodic() {
+		LiveWindow.add(movepid);
+		double pidoutput = movepid.calculate(leftDrive.get());
+		drive.arcadeDrive(pidoutput, 0);
 	}
 }
