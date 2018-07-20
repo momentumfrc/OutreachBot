@@ -34,6 +34,8 @@ public class Robot extends IterativeRobot {
 	private PIDcontroller movepid; 
 	//private SendableChooser controlChooser;
 	
+	LightsChooser lightsChooser;
+	
 	
 	private double throttle=1;
 	
@@ -56,6 +58,8 @@ public class Robot extends IterativeRobot {
 		drive = new DifferentialDrive(new SpeedControllerGroup(leftFront, leftBack), new SpeedControllerGroup(rightFront, rightBack));
 		leftDrive = new Encoder(1, 0);
 		movepid = new PIDcontroller(0,0,0, 10,10);
+		
+		lightsChooser = new LightsChooser();
 		//controlChooser = new SendableChooser(); 
 		//controlChooser.addDefault("XboxBias and F310", );
 	}
